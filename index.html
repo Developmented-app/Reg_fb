@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធគ្រប់គ្រង និងបង្កើតគណនីស្វ័យប្រវត្តិ (Emulator Account Creator)</title>
+    <!-- ទាញយក Tailwind CSS សម្រាប់រចនាបថដ៏ស្រស់ស្អាត -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ទាញយក Lucide Icons សម្រាប់រូបតំណាង -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..900;1,100..900&display=swap');
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+
+    <!-- តួកម្មវិធីទាំងមូល (Simulated Window) -->
+    <div class="w-full max-w-6xl bg-white rounded-2xl border-4 border-sky-400 shadow-2xl overflow-hidden flex flex-col">
+        
+        <!-- របារចំណងជើងកម្មវិធី (Window Title Bar) -->
+        <div class="bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-3 flex justify-between items-center text-white border-b-2 border-sky-400">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-6 h-6"></i>
+                <span class="font-bold text-lg tracking-wide">ប្រព័ន្ធបង្កើតគណនីស្វ័យប្រវត្តិតាម Emulator (v2.8.5 Pro)</span>
+            </div>
+            <div class="flex space-x-2">
+                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            </div>
+        </div>
+
+        <!-- ផ្នែកកំណត់រចនាសម្ព័ន្ធ (Configuration Settings) -->
+        <div class="p-4 bg-sky-50/50 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 border-b-2 border-sky-100">
+            
+            <!-- ប្លុកកំណត់ឈ្មោះ (Name) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="user" class="w-4 h-4"></i> ឈ្មោះ (Name)
+                </span>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="name_opt" value="custom" class="text-sky-500 focus:ring-sky-400">
+                        <span>កំណត់ខ្លួនឯង</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="name_opt" value="random" checked class="text-sky-500 focus:ring-sky-400">
+                        <span>ចៃដន្យ (Random)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ប្លុកកំណត់ទូរស័ព្ទ (Phone) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i> ទូរស័ព្ទ (Phone)
+                </span>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="phone_opt" value="f-phone" class="text-sky-500 focus:ring-sky-400">
+                        <span>F-Phone (ស៊ីមនិម្មិត)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="phone_opt" value="f-mail" checked class="text-sky-500 focus:ring-sky-400">
+                        <span>F-Mail (អ៊ីមែលជំនួស)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ប្លុកកំណត់លេខសម្ងាត់ (Password) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between col-span-1 lg:col-span-1">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="key-round" class="w-4 h-4"></i> លេខសម្ងាត់ (Password)
+                </span>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <input type="radio" id="pass_custom" name="pass_opt" value="custom" class="text-sky-500 focus:ring-sky-400">
+                        <input type="text" id="custom_pass_val" value="YIYY#Sjkjqwe" class="w-full bg-sky-50 border border-sky-200 rounded px-1.5 py-0.5 text-[10px] font-mono focus:outline-none focus:border-sky-500" placeholder="បញ្ចូលលេខសម្ងាត់">
+                    </div>
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="pass_opt" value="random" checked class="text-sky-500 focus:ring-sky-400">
+                        <span>ចៃដន្យ (Random)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ប្លុកកំណត់ភេទ (Gender) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="users" class="w-4 h-4"></i> ភេទ (Gender)
+                </span>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="gender_opt" value="female" checked class="text-sky-500 focus:ring-sky-400">
+                        <span>នារី (Female)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="gender_opt" value="random" class="text-sky-500 focus:ring-sky-400">
+                        <span>ចៃដន្យ (Random)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ប្លុកកំណត់អ៊ីមែល (Mail) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between col-span-1 lg:col-span-1">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="mail" class="w-4 h-4"></i> ប្រភពអ៊ីមែល (Mail)
+                </span>
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2 justify-between">
+                        <label class="flex items-center space-x-1 cursor-pointer text-xs font-semibold text-gray-700">
+                            <input type="radio" name="mail_opt" value="yandex" checked class="text-sky-500 focus:ring-sky-400">
+                            <span>Yandex</span>
+                        </label>
+                        <label class="flex items-center space-x-1 cursor-pointer text-xs font-semibold text-gray-700">
+                            <input type="radio" name="mail_opt" value="tempmail" class="text-sky-500 focus:ring-sky-400">
+                            <span>Temp Mail</span>
+                        </label>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <input type="radio" name="mail_opt" value="gmail" class="text-sky-500 focus:ring-sky-400">
+                        <input type="text" id="gmail_api" placeholder="Gmail api key" class="w-full bg-sky-50 border border-sky-200 rounded px-1.5 py-0.5 text-[10px] focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ប្លុកកំណត់សេវាកម្មដោះស្រាយ (Bypass/Decome) -->
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm flex flex-col justify-between col-span-1 lg:col-span-1">
+                <span class="text-sm font-bold text-sky-700 mb-2 flex items-center gap-1">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> សេវាជំនួយ (Decome)
+                </span>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2 cursor-pointer text-xs font-semibold text-gray-700">
+                        <input type="radio" name="decome_opt" value="vpn" checked class="text-sky-500 focus:ring-sky-400">
+                        <span>VPN Express</span>
+                    </label>
+                    <div class="flex items-center space-x-1">
+                        <input type="radio" name="decome_opt" value="phone-api" class="text-sky-500 focus:ring-sky-400">
+                        <input type="text" id="phone_api" placeholder="Phone api key" class="w-full bg-sky-50 border border-sky-200 rounded px-1.5 py-0.5 text-[10px] focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- របារបញ្ជា និងបង្ហាញស្ថិតិ (Control Panel & Statistics) -->
+        <div class="p-4 bg-sky-100/50 border-b-2 border-sky-200 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- ស្ថិតិជោគជ័យ -->
+                <div class="bg-green-50 border-2 border-green-400 text-green-700 px-4 py-1.5 rounded-full font-bold text-sm flex items-center space-x-2 shadow-sm">
+                    <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping"></span>
+                    <span>ជោគជ័យ :</span>
+                    <span id="success_count" class="font-mono text-base">100</span>
+                </div>
+                <!-- ស្ថិតិបរាជ័យ -->
+                <div class="bg-red-50 border-2 border-red-400 text-red-700 px-4 py-1.5 rounded-full font-bold text-sm flex items-center space-x-2 shadow-sm">
+                    <span class="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                    <span>បរាជ័យ :</span>
+                    <span id="disable_count" class="font-mono text-base">500</span>
+                </div>
+            </div>
+
+            <!-- កំណត់ដែនកំណត់ និងប៊ូតុងបញ្ជា -->
+            <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+                <div class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-sky-300">
+                    <span class="text-xs font-bold text-sky-800">លីមីត (Limit):</span>
+                    <input type="number" id="limit_input" value="10" min="1" max="100" class="w-14 font-mono font-bold text-center focus:outline-none text-sky-800">
+                </div>
+
+                <!-- ប៊ូតុងបញ្ឈប់ -->
+                <button id="btn_stop" class="px-5 py-2 bg-red-500 hover:bg-red-600 active:scale-95 transition-all text-white font-bold rounded-lg shadow-md flex items-center space-x-1 text-sm disabled:opacity-50" disabled>
+                    <i data-lucide="square" class="w-4 h-4"></i>
+                    <span>បញ្ឈប់ (Stop)</span>
+                </button>
+
+                <!-- ប៊ូតុងចាប់ផ្ដើម -->
+                <button id="btn_start" class="px-5 py-2 bg-green-600 hover:bg-green-700 active:scale-95 transition-all text-white font-bold rounded-lg shadow-md flex items-center space-x-1 text-sm">
+                    <i data-lucide="play" class="w-4 h-4"></i>
+                    <span>ចាប់ផ្ដើម (Start)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- តារាងបង្ហាញទិន្នន័យពី Emulator (Emulator Data Table) -->
+        <div class="flex-grow overflow-x-auto min-h-[350px] max-h-[500px]">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gradient-to-r from-sky-200 to-blue-200 text-sky-900 sticky top-0 z-10 text-xs font-bold uppercase tracking-wider border-b border-sky-300">
+                        <th class="p-3 border-r border-sky-300">កម្មវិធីត្រាប់តាម (Emulator)</th>
+                        <th class="p-3 border-r border-sky-300">លេខសម្គាល់ (UID)</th>
+                        <th class="p-3 border-r border-sky-300">លេខសម្ងាត់ (Password)</th>
+                        <th class="p-3 border-r border-sky-300">គុកឃី (Cookie)</th>
+                        <th class="p-3 border-r border-sky-300">ថូខឹន (Token)</th>
+                        <th class="p-3 border-r border-sky-300">អ៊ីមែល (Email)</th>
+                        <th class="p-3 border-r border-sky-300">កូដ 2FA</th>
+                        <th class="p-3">ស្ថានភាព (Status)</th>
+                    </tr>
+                </thead>
+                <tbody id="emulator_rows" class="divide-y divide-sky-100 text-xs font-semibold text-gray-700">
+                    <!-- ជួរទី១ -->
+                    <tr class="hover:bg-sky-50/50 transition-colors" id="row-5556">
+                        <td class="p-3 border-r border-sky-100 font-mono text-sky-700 flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-400 status-indicator"></span>
+                            <span>emulator-5556</span>
+                        </td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-uid">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-pass">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono max-w-[120px] truncate text-gray-500 cell-cookie" title="-">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono max-w-[120px] truncate text-gray-500 cell-token" title="-">-</td>
+                        <td class="p-3 border-r border-sky-100 text-gray-500 cell-email">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-2fa">-</td>
+                        <td class="p-3 font-semibold cell-status"><span class="text-gray-400">ត្រៀមខ្លួនជាស្រេច</span></td>
+                    </tr>
+                    <!-- ជួរទី២ -->
+                    <tr class="hover:bg-sky-50/50 transition-colors" id="row-5554">
+                        <td class="p-3 border-r border-sky-100 font-mono text-sky-700 flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-400 status-indicator"></span>
+                            <span>emulator-5554</span>
+                        </td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-uid">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-pass">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono max-w-[120px] truncate text-gray-500 cell-cookie" title="-">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono max-w-[120px] truncate text-gray-500 cell-token" title="-">-</td>
+                        <td class="p-3 border-r border-sky-100 text-gray-500 cell-email">-</td>
+                        <td class="p-3 border-r border-sky-100 font-mono text-gray-500 cell-2fa">-</td>
+                        <td class="p-3 font-semibold cell-status"><span class="text-gray-400">ត្រៀមខ្លួនជាស្រេច</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- របារព័ត៌មានខាងក្រោម (Footer Control & License Info) -->
+        <div class="p-3 bg-sky-50 border-t-2 border-sky-200 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+            <div class="flex items-center space-x-2 text-sky-800">
+                <i data-lucide="terminal" class="w-4 h-4 animate-pulse"></i>
+                <span id="system_log" class="font-bold text-xs">ស្ថានភាព៖ រង់ចាំការបញ្ជាពីអ្នកប្រើប្រាស់...</span>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                <!-- កន្លែងបញ្ចូល License Key -->
+                <div class="flex items-center space-x-1.5 bg-white border border-sky-300 rounded-lg px-2 py-1 w-full sm:w-auto">
+                    <i data-lucide="key" class="w-4 h-4 text-sky-500"></i>
+                    <input type="text" id="license_key" value="XWVFIP-KSIWMV-TXXNPM-LJ42R3-944SCG-Y9GJIN" class="bg-transparent font-mono text-xs w-64 text-sky-950 focus:outline-none" placeholder="លេខកូដអាជ្ញាប័ណ្ណ (License Key)">
+                </div>
+                
+                <!-- ប៊ូតុងផ្ទៀងផ្ទាត់ -->
+                <button id="btn_login" class="px-3 py-1 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-lg shadow transition-all">
+                    ចូលប្រព័ន្ធ (Login)
+                </button>
+                
+                <!-- ប៊ូតុងទិញអាជ្ញាប័ណ្ណ -->
+                <button id="btn_buy" class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-xs rounded-lg shadow transition-all">
+                    ទិញសោរកូដ (Buy Key)
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ប្រអប់សារជូនដំណឹង (Custom Modal / Toast Alert) -->
+    <div id="toast_box" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <div id="toast_icon" class="text-yellow-400">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+        </div>
+        <div class="flex flex-col">
+            <span id="toast_title" class="font-bold text-xs text-yellow-400">ការជូនដំណឹង</span>
+            <span id="toast_msg" class="text-xs font-semibold">សារជូនដំណឹងទូទៅ</span>
+        </div>
+    </div>
+
+    <!-- ស្គ្រីបគ្រប់គ្រងដំណើរការកម្មវិធី -->
+    <script>
+        // ចាប់ផ្ដើមការប្រើប្រាស់ Lucide Icons
+        lucide.createIcons();
+
+        // ទាញយក Elements សំខាន់ៗមកប្រើប្រាស់
+        const btnStart = document.getElementById('btn_start');
+        const btnStop = document.getElementById('btn_stop');
+        const btnLogin = document.getElementById('btn_login');
+        const btnBuy = document.getElementById('btn_buy');
+        const systemLog = document.getElementById('system_log');
+        const successCount = document.getElementById('success_count');
+        const disableCount = document.getElementById('disable_count');
+        const limitInput = document.getElementById('limit_input');
+        const licenseKeyInput = document.getElementById('license_key');
+        const emulatorRows = document.getElementById('emulator_rows');
+
+        // ការកំណត់ទិន្នន័យតេស្ត និងការបង្កើត
+        let runInterval = null;
+        let isRunning = false;
+        let successVal = 100;
+        let disableVal = 500;
+
+        // ឈ្មោះសម្រាប់ចៃដន្យ (Khmer Inspired Romanized Names for Account Generation)
+        const mockNames = ['Chantra', 'Sokha', 'Borey', 'Vibol', 'Narin', 'Dara', 'SreyNeang', 'Piseth', 'Devid', 'Rotha'];
+        const mockDomains = ['yandex.com', 'tempmail.net', 'gmail.com'];
+
+        // មុខងារបង្ហាញសារជូនដំណឹង (Toast Notification)
+        function showToast(title, message, iconType = 'bell') {
+            const toast = document.getElementById('toast_box');
+            const tTitle = document.getElementById('toast_title');
+            const tMsg = document.getElementById('toast_msg');
+            const tIcon = document.getElementById('toast_icon');
+
+            tTitle.textContent = title;
+            tMsg.textContent = message;
+            
+            // ប្ដូររូបតំណាង
+            if (iconType === 'success') {
+                tIcon.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-green-400"></i>`;
+                tTitle.className = "font-bold text-xs text-green-400";
+            } else if (iconType === 'error') {
+                tIcon.innerHTML = `<i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>`;
+                tTitle.className = "font-bold text-xs text-red-400";
+            } else {
+                tIcon.innerHTML = `<i data-lucide="bell" class="w-5 h-5 text-yellow-400"></i>`;
+                tTitle.className = "font-bold text-xs text-yellow-400";
+            }
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // មុខងារបង្កើតលេខ និងអក្សរចៃដន្យ
+        function makeRandomStr(length) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        // មុខងារបង្កើត License Key ថ្មី
+        btnBuy.addEventListener('click', () => {
+            const keyParts = [];
+            for(let i=0; i<6; i++) {
+                keyParts.push(makeRandomStr(6).toUpperCase());
+            }
+            const newKey = keyParts.join('-');
+            licenseKeyInput.value = newKey;
+            showToast("ទិញសោរកូដជោគជ័យ", "សោរកូដអាជ្ញាប័ណ្ណថ្មីត្រូវបានបង្កើតឡើង!", "success");
+            systemLog.textContent = "ស្ថានភាព៖ បានទិញ និងផ្លាស់ប្ដូរសោរកូដអាជ្ញាប័ណ្ណថ្មី។";
+        });
+
+        // មុខងារផ្ទៀងផ្ទាត់ការចូលប្រើប្រាស់
+        btnLogin.addEventListener('click', () => {
+            const key = licenseKeyInput.value.trim();
+            if (key.length < 10) {
+                showToast("បរាជ័យ", "សូមបញ្ចូលសោរកូដអាជ្ញាប័ណ្ណឱ្យបានត្រឹមត្រូវ!", "error");
+            } else {
+                showToast("ចូលប្រើប្រាស់ជោគជ័យ", "គណនីរបស់អ្នកត្រូវបានផ្ទៀងផ្ទាត់ដោយជោគជ័យ!", "success");
+                systemLog.textContent = "ស្ថានភាព៖ គណនីបានភ្ជាប់ទៅកាន់ម៉ាស៊ីនមេយ៉ាងជោគជ័យ។";
+            }
+        });
+
+        // មុខងារចាប់ផ្ដើមក្លែងដំណើរការបង្កើតគណនី
+        btnStart.addEventListener('click', () => {
+            if (isRunning) return;
+            
+            // ឆែកមើលអាជ្ញាប័ណ្ណជាមុនសិន
+            if (licenseKeyInput.value.trim() === "") {
+                showToast("ទាមទារសោរកូដ", "សូមបញ្ចូល ឬទិញលេខកូដអាជ្ញាប័ណ្ណជាមុនសិន!", "error");
+                return;
+            }
+
+            isRunning = true;
+            btnStart.disabled = true;
+            btnStart.classList.add('opacity-50', 'cursor-not-allowed');
+            btnStop.disabled = false;
+
+            systemLog.textContent = "ស្ថានភាព៖ កំពុងចាប់ផ្ដើមដំណើរការស្វ័យប្រវត្តិកម្ម...";
+            showToast("ដំណើរការ", "កំពុងចាប់ផ្ដើមដំណើរការបង្កើតគណនី...", "bell");
+
+            const rows = document.querySelectorAll('#emulator_rows tr');
+            let currentIndex = 0;
+
+            runInterval = setInterval(() => {
+                if (currentIndex >= rows.length) {
+                    // ប្រសិនបើចប់គ្រប់ជួរហើយ ត្រឡប់មកចាប់ផ្ដើមពីជួរទី១វិញ
+                    currentIndex = 0;
+                }
+
+                const currentRow = rows[currentIndex];
+                const statusIndicator = currentRow.querySelector('.status-indicator');
+                const statusCell = currentRow.querySelector('.cell-status');
+                
+                // ប្ដូរស្ថានភាពទៅជា "កំពុងដំណើរការ..."
+                statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-yellow-500 animate-ping status-indicator";
+                statusCell.innerHTML = `<span class="text-yellow-600 font-bold">កំពុងចុះឈ្មោះ...</span>`;
+                systemLog.textContent = `ស្ថានភាព៖ ម៉ាស៊ីនត្រាប់តាម ${currentRow.id.replace('row-', 'emulator-')} កំពុងចុះឈ្មោះ...`;
+
+                setTimeout(() => {
+                    if (!isRunning) return; // ករណីចុចបញ្ឈប់ទាន់ពេល
+
+                    // ក្លែងធ្វើលទ្ធផល (៨០% ជោគជ័យ, ២០% បរាជ័យ)
+                    const isSuccess = Math.random() > 0.2;
+
+                    if (isSuccess) {
+                        // កំណត់ទិន្នន័យចៃដន្យក្នុងតារាង
+                        const randomName = mockNames[Math.floor(Math.random() * mockNames.length)].toLowerCase() + Math.floor(Math.random() * 1000);
+                        const selectedMailOpt = document.querySelector('input[name="mail_opt"]:checked').value;
+                        let emailDomain = 'yandex.com';
+                        if (selectedMailOpt === 'tempmail') emailDomain = 'tempmail.net';
+                        if (selectedMailOpt === 'gmail') emailDomain = 'gmail.com';
+
+                        const uid = "1000" + Math.floor(100000000 + Math.random() * 900000000);
+                        
+                        // យកលេខសម្ងាត់តាមជម្រើស
+                        const passOpt = document.querySelector('input[name="pass_opt"]:checked').value;
+                        const password = (passOpt === 'custom') ? document.getElementById('custom_pass_val').value : makeRandomStr(10);
+                        
+                        const cookie = "c_user=" + uid + "; xs=" + makeRandomStr(20) + "; fr=" + makeRandomStr(15);
+                        const token = "EAAG" + makeRandomStr(35);
+                        const email = randomName + "@" + emailDomain;
+                        const twoFA = Math.floor(100000 + Math.random() * 900000);
+
+                        // បំពេញទិន្នន័យចូលក្នុង Table
+                        currentRow.querySelector('.cell-uid').textContent = uid;
+                        currentRow.querySelector('.cell-pass').textContent = password;
+                        
+                        const cookieCell = currentRow.querySelector('.cell-cookie');
+                        cookieCell.textContent = cookie;
+                        cookieCell.title = cookie;
+
+                        const tokenCell = currentRow.querySelector('.cell-token');
+                        tokenCell.textContent = token;
+                        tokenCell.title = token;
+
+                        currentRow.querySelector('.cell-email').textContent = email;
+                        currentRow.querySelector('.cell-2fa').textContent = twoFA;
+
+                        statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-green-500 status-indicator";
+                        statusCell.innerHTML = `<span class="text-green-600 font-bold">ជោគជ័យ</span>`;
+
+                        // បន្ថែមចំនួនជោគជ័យ
+                        successVal += 1;
+                        successCount.textContent = successVal;
+                        systemLog.textContent = `ស្ថានភាព៖ ម៉ាស៊ីនត្រាប់តាម ${currentRow.id.replace('row-', 'emulator-')} បង្កើតគណនីបានជោគជ័យ!`;
+
+                    } else {
+                        // ករណីបរាជ័យ
+                        statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-red-500 status-indicator";
+                        statusCell.innerHTML = `<span class="text-red-600 font-bold">គណនីត្រូវបិទ/ខូច</span>`;
+
+                        disableVal += 1;
+                        disableCount.textContent = disableVal;
+                        systemLog.textContent = `ស្ថានភាព៖ ម៉ាស៊ីនត្រាប់តាម ${currentRow.id.replace('row-', 'emulator-')} ជួបបញ្ហាក្នុងការបង្កើតគណនី។`;
+                    }
+                }, 2000);
+
+                currentIndex++;
+            }, 3000);
+        });
+
+        // មុខងារបញ្ឈប់ដំណើរការ
+        btnStop.addEventListener('click', () => {
+            if (!isRunning) return;
+
+            clearInterval(runInterval);
+            isRunning = false;
+            btnStart.disabled = false;
+            btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
+            btnStop.disabled = true;
+
+            systemLog.textContent = "ស្ថានភាព៖ បានបញ្ឈប់ដំណើរការស្វ័យប្រវត្តិកម្ម។";
+            showToast("បានបញ្ឈប់", "ការចុះឈ្មោះស្វ័យប្រវត្តត្រូវបានផ្អាក។", "error");
+
+            // កំណត់ស្ថានភាពម៉ាស៊ីនត្រាប់តាមដែលកំពុងដំណើរការឱ្យរង់ចាំឡើងវិញ
+            const indicators = document.querySelectorAll('.status-indicator');
+            indicators.forEach(ind => {
+                if (ind.classList.contains('animate-ping')) {
+                    ind.className = "w-2.5 h-2.5 rounded-full bg-gray-400 status-indicator";
+                    const row = ind.closest('tr');
+                    row.querySelector('.cell-status').innerHTML = `<span class="text-gray-400">ផ្អាកបណ្ដោះអាសន្ន</span>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
